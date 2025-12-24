@@ -60,7 +60,7 @@ function StackedCardsSection({ cmsData }) {
     if (!section || !content || !container || cardEls.length === 0) return;
 
     const triggerElement = isMobile ? container : section;
-    const headerHeight = 80;
+    const headerHeight = 150;
     const startPoint = isMobile ? `top top+=${headerHeight}` : "top top";
 
     const tl = gsap.timeline({
