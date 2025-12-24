@@ -58,10 +58,34 @@ export default defineType({
               default: false,
             }),
             defineField({
-              name: 'dropdownItems',
-              title: 'Dropdown Items',
+              name: 'subItems',
+              title: 'Sub Items',
               type: 'array',
-              of: [{type: 'string'}],
+              of: [
+                {
+                  type: 'object',
+                  fields: [
+                    defineField({
+                      name: 'label',
+                      title: 'Label',
+                      type: 'string',
+                      validation: (Rule) => Rule.required(),
+                    }),
+                    defineField({
+                      name: 'url',
+                      title: 'URL',
+                      type: 'string',
+                      validation: (Rule) => Rule.required(),
+                    }),
+                  ],
+                  preview: {
+                    select: {
+                      title: 'label',
+                      subtitle: 'url',
+                    },
+                  },
+                },
+              ],
               hidden: ({parent}) => !parent?.hasDropdown,
             }),
           ],
@@ -98,6 +122,24 @@ export default defineType({
       title: 'Dropdown Arrow SVG',
       type: 'image',
       description: 'SVG image for dropdown arrow icon (optional - will use text fallback if not provided)',
+      options: {
+        accept: 'image/svg+xml',
+      },
+    }),
+    defineField({
+      name: 'hamburgerIcon',
+      title: 'Hamburger Menu Icon SVG',
+      type: 'image',
+      description: 'SVG image for hamburger menu icon (three lines) - used on mobile screens',
+      options: {
+        accept: 'image/svg+xml',
+      },
+    }),
+    defineField({
+      name: 'closeIcon',
+      title: 'Close Menu Icon SVG',
+      type: 'image',
+      description: 'SVG image for close menu icon (X) - used in mobile menu panel',
       options: {
         accept: 'image/svg+xml',
       },

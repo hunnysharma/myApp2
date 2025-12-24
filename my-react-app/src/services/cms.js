@@ -329,13 +329,28 @@ async function fetchHeader() {
       label,
       url,
       hasDropdown,
-      dropdownItems
+      subItems[] {
+        label,
+        url
+      }
     },
     ctaButton {
       text,
       url
     },
     dropdownArrow {
+      asset-> {
+        _id,
+        url
+      }
+    },
+    hamburgerIcon {
+      asset-> {
+        _id,
+        url
+      }
+    },
+    closeIcon {
       asset-> {
         _id,
         url
@@ -353,6 +368,14 @@ async function fetchHeader() {
       // Process dropdown arrow SVG URL
       if (data.dropdownArrow) {
         data.dropdownArrowUrl = urlForImage(data.dropdownArrow);
+      }
+      // Process hamburger icon SVG URL
+      if (data.hamburgerIcon) {
+        data.hamburgerIconUrl = urlForImage(data.hamburgerIcon);
+      }
+      // Process close icon SVG URL
+      if (data.closeIcon) {
+        data.closeIconUrl = urlForImage(data.closeIcon);
       }
     }
     return data;
