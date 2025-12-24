@@ -87,9 +87,9 @@ function getDefaultCMSData() {
 export async function fetchCMSData() {
   // Check if Sanity is configured
   const projectId = import.meta.env.VITE_SANITY_PROJECT_ID;
-  const dataset = import.meta.env.VITE_SANITY_DATASET;
+  const dataset = import.meta.env.VITE_SANITY_DATASET || 'production';
   
-  if (!projectId || !dataset) {
+  if (!projectId) {
     return getDefaultCMSData();
   }
 
@@ -189,8 +189,18 @@ async function fetchScrollSection() {
         }));
       }
       // Process policy apps image URL - use AVIF format
-      if (data.policyAppsImage?.asset?.url) {
-        data.policyAppsSvgUrl = urlForImage(data.policyAppsImage, { format: 'avif' });
+      if (data.policyAppsImage) {
+        // Try to get URL from asset
+        const assetUrl = data.policyAppsImage.asset?.url;
+        if (assetUrl) {
+          // Use urlForImage to add format parameter
+          const imageUrl = urlForImage(data.policyAppsImage, { format: 'avif' });
+          data.policyAppsSvgUrl = imageUrl || assetUrl;
+        } else {
+          data.policyAppsSvgUrl = null;
+        }
+      } else {
+        data.policyAppsSvgUrl = null;
       }
     }
     return data;

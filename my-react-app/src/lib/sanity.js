@@ -65,7 +65,8 @@ export function urlForImage(source, options = {}) {
   if (source.asset?._ref) {
     const imageRef = source.asset._ref;
     const [_file, id, extension] = imageRef.split('-');
-    let url = `https://cdn.sanity.io/images/${import.meta.env.VITE_SANITY_PROJECT_ID}/${import.meta.env.VITE_SANITY_DATASET}/${id}-${extension}`;
+    const dataset = import.meta.env.VITE_SANITY_DATASET || 'production';
+    let url = `https://cdn.sanity.io/images/${import.meta.env.VITE_SANITY_PROJECT_ID}/${dataset}/${id}-${extension}`;
     
     // Build query parameters
     const params = new URLSearchParams();
@@ -106,7 +107,8 @@ export function urlForFile(source) {
   if (source.asset?._ref) {
     const fileRef = source.asset._ref;
     const [_file, id, extension] = fileRef.split('-');
-    return `https://cdn.sanity.io/files/${import.meta.env.VITE_SANITY_PROJECT_ID}/${import.meta.env.VITE_SANITY_DATASET}/${id}.${extension}`;
+    const dataset = import.meta.env.VITE_SANITY_DATASET || 'production';
+    return `https://cdn.sanity.io/files/${import.meta.env.VITE_SANITY_PROJECT_ID}/${dataset}/${id}.${extension}`;
   }
   
   return null;
