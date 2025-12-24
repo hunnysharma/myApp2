@@ -1,0 +1,150 @@
+.sticky-horizontal-section {
+  position: relative;
+  width: 100%;
+  padding: 100px 0;
+  overflow: hidden;
+}
+
+.sticky-horizontal-header-container {
+  max-width: 1070px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 2rem;
+  margin-bottom: 2.5rem;
+  text-align: left;
+}
+
+.sticky-horizontal-label {
+  color: #1F2937;
+  font-size: 22px;
+  line-height: 1.2;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.sticky-horizontal-title {
+  color: #000;
+  font-size: 50px;
+  font-weight: 500;
+  line-height: 120%;
+  letter-spacing: -2px;
+  text-transform: capitalize;
+  margin: 0;
+  margin-bottom: 20px;
+  max-width: 350px;
+}
+
+@media (min-width: 1024px) {
+  .sticky-horizontal-title {
+    font-size: 60px;
+    max-width: 800px;
+    margin-bottom: 40px;
+  }
+}
+
+.sticky-horizontal-cards-wrapper {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  padding-left: 2rem;
+  padding-right: 0;
+}
+
+@media (min-width: 1070px) {
+  .sticky-horizontal-cards-wrapper {
+    padding-left: max(2rem, calc((100% - 1070px) / 2 + 2rem));
+  }
+}
+
+.sticky-horizontal-cards-container {
+  display: flex;
+  gap: 20px;
+  width: max-content;
+  will-change: transform;
+}
+
+.sticky-horizontal-card {
+  flex: none;
+  width: 378px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background: white;
+  border-radius: 12px;
+  padding: 30px;
+  min-height: 500px;
+}
+
+.sticky-horizontal-card-image-wrapper {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 260px;
+  padding: 0 20px;
+}
+
+.sticky-horizontal-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.sticky-horizontal-card-content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.sticky-horizontal-card-title {
+  color: #000;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 21px;
+  margin: 0 0 8px 0;
+}
+
+.sticky-horizontal-card-description {
+  color: #545454;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 150%;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .sticky-horizontal-section {
+    padding: 60px 1rem;
+  }
+  
+  .sticky-horizontal-header-container {
+    padding: 0 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .sticky-horizontal-title {
+    font-size: 32px;
+    max-width: 100%;
+  }
+  
+  .sticky-horizontal-cards-wrapper {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    overflow-x: visible;
+  }
+  
+  .sticky-horizontal-cards-container {
+    flex-direction: column;
+    width: 100%;
+    gap: 1.5rem;
+  }
+  
+  .sticky-horizontal-card {
+    width: 100%;
+    min-height: auto;
+    padding: 24px;
+    max-width: 378px;
+    margin: 0 auto;
+  }
+}
+

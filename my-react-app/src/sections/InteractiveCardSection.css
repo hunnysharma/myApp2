@@ -1,0 +1,145 @@
+.interactive-card-section {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6rem 2rem;
+  background: #A5CFB4;
+  width: 100%;
+  position: relative;
+}
+
+.interactive-container {
+  max-width: 1070px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.interactive-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.interactive-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.interactive-visual {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: center;
+}
+
+.interactive-title {
+  width: 380px;
+  font-size: 3rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: #1F2937;
+  margin: 0;
+}
+
+.interactive-description {
+  width: 380px;
+  font-size: 1.125rem;
+  font-weight: 400;
+  line-height: 1.6;
+  color: #1F2937;
+  margin: 0;
+}
+
+.card-controls {
+  display: flex;
+  gap: 0;
+  border-radius: 30px;
+  overflow: hidden;
+  border: 2px solid white;
+  background: white;
+}
+
+.control-btn {
+  padding: 0.75rem 2rem;
+  border: none;
+  background: white;
+  color: #1F2937;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+  border-radius: 0;
+  border-radius:  30px;
+  flex: 1;
+  text-transform: uppercase;
+}
+
+.control-btn:hover:not(.active) {
+  background: #f0f0f0;
+}
+
+.control-btn.active {
+  background: #1F8844;
+  color: white;
+}
+
+.card-display {
+  width: 100%;
+  position: relative;
+}
+
+.svg-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  padding: 2rem;
+  transition: all 0.3s ease;
+}
+
+.card-svg {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  display: block;
+}
+
+@media (max-width: 1024px) {
+  .interactive-content {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .interactive-card-section {
+    padding: 4rem 1rem;
+  }
+  
+  .interactive-title {
+    font-size: 2rem;
+  }
+  
+  .interactive-description {
+    font-size: 1rem;
+  }
+  
+  .card-controls {
+    width: 100%;
+  }
+  
+  .control-btn {
+    padding: 0.6rem 1.5rem;
+    font-size: 0.9rem;
+    flex: 1;
+  }
+  
+  .svg-container {
+    padding: 1rem;
+  }
+}
+

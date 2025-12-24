@@ -1,0 +1,466 @@
+.scroll-sections-container {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  margin-top: 200px;
+  overflow-x: hidden;
+}
+
+.scroll-heading {
+  max-width: 1070px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 2rem;
+  pointer-events: none;
+  text-align: initial;
+}
+
+.scroll-heading-text {
+  font-family: 'Satoshi', sans-serif;
+  font-weight: 500;
+  font-style: normal;
+  font-size: 60px;
+  line-height: 120%;
+  letter-spacing: 0%;
+  color: #1F2937;
+  margin: 0;
+  width: 60%;
+}
+
+.scroll-content {
+  position: relative;
+  max-width: 1070px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  min-height: 600px;
+  overflow: hidden;
+}
+
+.progress-segment {
+  width: 4px;
+  height: 60px;
+  background: #E5E7EB;
+  border-radius: 2px;
+  transition: background 0.3s ease;
+}
+
+.scroll-cards-wrapper {
+  position: relative;
+  width: 100%;
+  height: 75vh;
+  min-height: 500px;
+  max-height: 800px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.scroll-cards-stack {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  overflow: hidden;
+  gap: 0;
+}
+
+.scroll-card {
+  position: relative;
+  width: 100px;
+  flex-shrink: 0;
+  flex-grow: 0;
+  min-height: 500px;
+  height: 100%;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  box-sizing: border-box;
+  will-change: width;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  overflow: visible;
+  visibility: visible;
+  opacity: 1;
+  transition: none;
+}
+
+.scroll-card[data-card-number="01"] {
+  background: #E6E3D5;
+}
+
+.scroll-card[data-card-number="02"] {
+  background: #202F3C;
+}
+
+.scroll-card[data-card-number="03"] {
+  background: #A5CFB4;
+}
+
+.scroll-card[data-card-number="04"] {
+  background: #1F8844;
+}
+
+.card-number {
+  font-family: 'Satoshi', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 26px;
+  letter-spacing: 0px;
+  padding: 0.75rem;
+  flex-shrink: 0;
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+  z-index: 10;
+}
+
+.scroll-card[data-card-number="01"] .card-number {
+  color: #000000;
+}
+
+.scroll-card[data-card-number="02"] .card-number {
+  color: #F7F6F2;
+}
+
+.scroll-card[data-card-number="03"] .card-number {
+  color: #000000;
+}
+
+.scroll-card[data-card-number="04"] .card-number {
+  color: #F7F6F2;
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  padding-top: 2rem;
+  position: relative;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.card-text-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  padding-right: 1.5rem;
+  padding-left: 2rem;
+  padding-top: 20px;
+  padding-bottom: 1.5rem;
+  position: relative;
+  z-index: 10;
+  flex: 1;
+}
+
+.card-text-wrapper > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.card-title {
+  font-family: Satoshi, sans-serif;
+  font-weight: 500;
+  font-style: normal;
+  font-size: 40px;
+  line-height: 120%;
+  letter-spacing: 0px;
+  margin: 0;
+  margin-top: 1.5rem; /* mt-6 equivalent */
+  max-width: 340px;
+}
+
+.scroll-card[data-card-number="01"] .card-title {
+  color: #1F2937;
+}
+
+.scroll-card[data-card-number="02"] .card-title {
+  color: #ffffff;
+}
+
+.scroll-card[data-card-number="03"] .card-title {
+  color: #1F2937;
+}
+
+.scroll-card[data-card-number="04"] .card-title {
+  color: #ffffff;
+}
+
+.card-description {
+  font-family: Satoshi, sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 18px;
+  line-height: 26px;
+  letter-spacing: 0px;
+  margin: 0;
+  margin-top: 1rem; /* mt-4 equivalent, md:mt-0 on desktop */
+  max-width: 300px;
+}
+
+.scroll-card[data-card-number="01"] .card-description {
+  color: #1F2937;
+}
+
+.scroll-card[data-card-number="02"] .card-description {
+  color: #ffffff;
+}
+
+.scroll-card[data-card-number="03"] .card-description {
+  color: #1F2937;
+}
+
+.scroll-card[data-card-number="04"] .card-description {
+  color: #ffffff;
+}
+
+.card-animation {
+  flex: 1 0 60%;
+  max-width: 60%;
+  height: 100%;
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.lottie-card {
+  width: 100%;
+  height: 100%;
+}
+
+.animation-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: #9CA3AF;
+  font-size: 0.875rem;
+}
+
+@media (max-width: 1200px) {
+  .scroll-cards-wrapper {
+    width: 100%;
+  }
+  
+  .card-animation {
+    width: 300px;
+    height: 300px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .scroll-heading-text {
+    font-size: 3rem;
+  }
+  
+  .scroll-content {
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  .progress-segment {
+    width: 60px;
+    height: 4px;
+  }
+  
+  .scroll-cards-wrapper {
+    min-height: 80vh;
+  }
+  
+  .card-animation {
+    position: relative;
+    right: auto;
+    top: auto;
+    transform: none;
+    width: 100%;
+    max-width: 400px;
+    margin: 2rem auto 0;
+  }
+  
+  .scroll-card {
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+    grid-template-columns: 1fr;
+    padding: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .scroll-sections-container {
+    min-height: auto;
+    margin-top: 100px;
+  }
+  
+  .scroll-heading {
+    position: relative;
+    top: auto;
+    left: auto;
+    margin-bottom: 2rem;
+    padding: 0 1rem;
+  }
+  
+  .scroll-heading-text {
+    font-size: 2rem;
+    width: 100%;
+  }
+  
+      .scroll-content {
+        height: auto;
+        min-height: auto;
+        padding: 0 1rem;
+        overflow: visible;
+      }
+      
+      .scroll-cards-wrapper {
+        height: auto;
+        min-height: auto;
+        max-height: none;
+        overflow: visible;
+      }
+      
+      .scroll-cards-stack {
+        overflow: visible;
+      }
+  
+  .scroll-cards-stack {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .scroll-card {
+    width: 100% !important;
+    flex-basis: auto !important;
+    min-height: 80px;
+    height: 80px;
+    max-height: calc(100vh - 200px);
+    padding: 1rem;
+    position: relative;
+    overflow: visible;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .card-number {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    z-index: 10;
+  }
+  
+  .card-animation {
+    width: 100%;
+    max-width: 100%;
+    height: 0;
+    position: relative;
+    right: auto;
+    top: auto;
+    flex: 0 0 auto;
+    margin-top: 0;
+    opacity: 0;
+    visibility: hidden;
+  }
+  
+  .card-content {
+    padding-top: 0;
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: calc(100vh - 350px);
+    min-height: 0;
+  }
+  
+  .card-text-wrapper {
+    padding: 0;
+  }
+  
+  .card-title {
+    font-family: Satoshi, sans-serif;
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 120%;
+    letter-spacing: 0px;
+    max-width: 100%;
+    margin-top: 0;
+  }
+  
+  .card-description {
+    font-family: Satoshi, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0px;
+    margin-top: 0.75rem;
+    max-width: 100%;
+  }
+}
+
+.scroll-svg-container {
+  max-width: 1070px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: -90px;
+}
+
+.policy-apps-svg {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+@media (min-width: 768px) {
+  
+  .policy-apps-svg {
+    max-width: 80%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .policy-apps-svg {
+    max-width: 70%;
+  }
+}
+
+@media (min-width: 1280px) {
+  .policy-apps-svg {
+    max-width: 60%;
+  }
+}
+
+@media (max-width: 767px) {
+  .scroll-svg-container {
+    padding: 0 1rem;
+    margin-top: 0;
+  }
+  
+  .policy-apps-svg {
+    max-width: 100%;
+  }
+}

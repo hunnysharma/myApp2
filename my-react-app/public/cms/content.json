@@ -1,0 +1,53 @@
+{
+  "hero": {
+    "title": "Empower Teams with the Right Knowledge",
+    "subtitle": "Unify all your enterprise knowledge into a single source of truth, so you can ask questions, surface insights, and take action—right when you need it"
+  },
+  "scrollSections": [
+    {
+      "title": "Go beyond enterprise search",
+      "description": "Perform action at scale with intelligent automation"
+    },
+    {
+      "title": "One-stop search and analysis",
+      "description": "Bring together documents, files, apps, and data—no more endless hunting in siloed systems."
+    },
+    {
+      "title": "Intelligent insights",
+      "description": "Surface actionable insights from your enterprise knowledge base"
+    },
+    {
+      "title": "Automated workflows",
+      "description": "Transform insights into decisive action with intelligent automation"
+    }
+  ],
+  "interactiveCards": [
+    {
+      "title": "Before",
+      "description": "Traditional enterprise search tools only point you to possible answers."
+    },
+    {
+      "title": "After",
+      "description": "Ema's agentic intelligence does the work—querying multiple sources, running analytics, building visualizations, and automating actions."
+    },
+    {
+      "title": "Impact",
+      "description": "Transform insights into decisive action with intelligent automation."
+    }
+  ],
+  "features": [
+    {
+      "title": "Simple",
+      "description": "Easy to setup, deploy in weeks. Customize AI employees with natural language."
+    },
+    {
+      "title": "Trusted",
+      "description": "On-prem and air-gapped deployment supported. Robust security and data governance."
+    },
+    {
+      "title": "Accurate",
+      "description": "Explains every action performed in detail. Continuous evaluation and improvement."
+    }
+  ]
+}
+
