@@ -4,6 +4,7 @@
   min-height: 100vh;
   margin-top: 200px;
   overflow-x: hidden;
+  padding-bottom: 200px;
 }
 
 .scroll-heading {
@@ -312,6 +313,7 @@
   .scroll-sections-container {
     min-height: auto;
     margin-top: 100px;
+    padding-bottom: 0;
   }
   
   .scroll-heading {
@@ -419,13 +421,19 @@
 }
 
 .scroll-svg-container {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
   max-width: 1070px;
   width: 100%;
   margin: 0 auto;
+  padding: 0 2rem;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: -150px;
+  z-index: 1;
+  pointer-events: none;
 }
 
 .policy-apps-svg {
@@ -456,8 +464,11 @@
 
 @media (max-width: 767px) {
   .scroll-svg-container {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    transform: none;
     padding: 0 1rem;
-    margin-top: 0;
   }
   
   .policy-apps-svg {

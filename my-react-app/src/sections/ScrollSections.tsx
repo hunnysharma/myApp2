@@ -542,7 +542,7 @@ function ScrollSections({ cmsData }: ScrollSectionsProps) {
                 return (
                   <div
                     key={index}
-                    ref={el => (cardsRef.current[index] = el)}
+                    ref={el => { cardsRef.current[index] = el; }}
                     className="scroll-card"
                     data-card-number={cardNumber}
                     onClick={() => handleCardClick(index)}
@@ -553,9 +553,9 @@ function ScrollSections({ cmsData }: ScrollSectionsProps) {
                       <>
                         <div className="card-animation">
                           {isLoading && <div className="animation-placeholder">Loading...</div>}
-                          {animationData && (
+                          {typeof animationData === "object" && animationData !== null && (
                             <LottieAnimation
-                              ref={el => (lottieRefs.current[index] = el)}
+                              ref={el => { lottieRefs.current[index] = el; }}
                               animationData={animationData}
                               className="lottie-card"
                               loop={true}
@@ -584,9 +584,11 @@ function ScrollSections({ cmsData }: ScrollSectionsProps) {
                         </div>
                         <div className="card-animation">
                           {isLoading && <div className="animation-placeholder">Loading...</div>}
-                          {animationData && (
+                          {typeof animationData === "object" && animationData !== null && (
                             <LottieAnimation
-                              ref={el => (lottieRefs.current[index] = el)}
+                              ref={el => {
+                                lottieRefs.current[index] = el;
+                              }}
                               animationData={animationData}
                               className="lottie-card"
                               loop={true}
@@ -602,14 +604,14 @@ function ScrollSections({ cmsData }: ScrollSectionsProps) {
             </div>
           </div>
         </div>
+        <div className="scroll-svg-container">
+          <img
+            src={scrollSection.policyAppsSvgUrl || policyAppsSvgFallback}
+            alt="Policy Apps"
+            className="policy-apps-svg"
+          />
+        </div>
       </section>
-      <div className="scroll-svg-container">
-        <img
-          src={scrollSection.policyAppsSvgUrl || policyAppsSvgFallback}
-          alt="Policy Apps"
-          className="policy-apps-svg"
-        />
-      </div>
     </>
   );
 }
