@@ -2,29 +2,50 @@ import { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import LottieAnimation from '../components/LottieAnimation';
+import type { LottieRef } from '../components/LottieAnimation';
 import policyAppsSvgFallback from '../assets/policyapps.svg';
+import { getLottieData } from '../utils/lottiePreloader';
+import type { CMSData } from '../types/cms';
 import './ScrollSections.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
-function ScrollSections({ cmsData }) {
-  const sectionRef = useRef(null);
-  const cardsRef = useRef([]);
-  const lottieRefs = useRef([]);
-  const [animations, setAnimations] = useState({
+interface ScrollSectionsProps {
+  cmsData?: CMSData | null;
+}
+
+interface Animations {
+  scroll1: unknown | null;
+  scroll2: unknown | null;
+  scroll3: unknown | null;
+  scroll4: unknown | null;
+}
+
+interface Loading {
+  scroll1: boolean;
+  scroll2: boolean;
+  scroll3: boolean;
+  scroll4: boolean;
+}
+
+function ScrollSections({ cmsData }: ScrollSectionsProps) {
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const lottieRefs = useRef<(LottieRef | null)[]>([]);
+  const [animations, setAnimations] = useState<Animations>({
     scroll1: null,
     scroll2: null,
     scroll3: null,
     scroll4: null,
   });
-  const [loading, setLoading] = useState({
+  const [loading, setLoading] = useState<Loading>({
     scroll1: true,
     scroll2: true,
     scroll3: true,
     scroll4: true,
   });
-  const [isMobile, setIsMobile] = useState(false);
-  const [openCardIndex, setOpenCardIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState<boolean>(false);
+  const [openCardIndex, setOpenCardIndex] = useState<number>(0);
 
   const scrollSection = useMemo(() => cmsData?.scrollSection || {
     heading: 'Go beyond enterprise search perform action at scale',
@@ -56,7 +77,7 @@ function ScrollSections({ cmsData }) {
   const headingText = scrollSection.heading || 'Go beyond enterprise search perform action at scale';
 
   useEffect(() => {
-    let timeoutId = null;
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
     const checkMobile = () => {
       if (timeoutId) clearTimeout(timeoutId);
       timeoutId = setTimeout(() => {
@@ -74,25 +95,28 @@ function ScrollSections({ cmsData }) {
   useEffect(() => {
     const loadAnimations = async () => {
       try {
-        const loadAnimation = async (url, key, fallbackPath) => {
+        const loadAnimation = async (url: string | undefined, key: keyof Animations, fallbackPath: string) => {
           try {
-            if (url) {
-              const response = await fetch(url);
+            // Use preloader utility which checks cache first
+            const targetUrl = url || fallbackPath;
+            const data = await getLottieData(targetUrl);
+
+            if (data) {
+              setAnimations(prev => ({ ...prev, [key]: data }));
+              setLoading(prev => ({ ...prev, [key]: false }));
+            } else {
+              // Fallback: try direct fetch if cache miss
+              const response = await fetch(fallbackPath);
               if (response.ok) {
-                const data = await response.json();
-                setAnimations(prev => ({ ...prev, [key]: data }));
+                const fallbackData = await response.json();
+                setAnimations(prev => ({ ...prev, [key]: fallbackData }));
                 setLoading(prev => ({ ...prev, [key]: false }));
-                return;
+              } else {
+                setLoading(prev => ({ ...prev, [key]: false }));
               }
             }
-            const response = await fetch(fallbackPath);
-            if (!response.ok) {
-              throw new Error(`Failed to load ${fallbackPath}: ${response.statusText}`);
-            }
-            const data = await response.json();
-            setAnimations(prev => ({ ...prev, [key]: data }));
-            setLoading(prev => ({ ...prev, [key]: false }));
           } catch (error) {
+            console.error(`Error loading animation for ${key}:`, error);
             setLoading(prev => ({ ...prev, [key]: false }));
           }
         };
@@ -104,6 +128,7 @@ function ScrollSections({ cmsData }) {
           loadAnimation(scrollData[3]?.lottieAnimationUrl, 'scroll4', '/assets/lottie/KI_scroll4_sq.json'),
         ]);
       } catch (error) {
+        console.warn('Error loading scroll animations:', error);
       }
     };
 
@@ -112,50 +137,50 @@ function ScrollSections({ cmsData }) {
 
   useEffect(() => {
     if (!sectionRef.current || isMobile) return;
-    
-    const cards = cardsRef.current.filter(Boolean);
+
+    const cards = cardsRef.current.filter(Boolean) as HTMLDivElement[];
     if (cards.length === 0) return;
 
     const progressSegments = sectionRef.current.querySelectorAll('.progress-segment');
-    
+
     gsap.set(progressSegments, { background: '#E5E7EB' });
     if (progressSegments[0]) {
       gsap.set(progressSegments[0], { background: '#1F2937' });
     }
 
-    const animationTriggered = new Set();
-    const cardStates = new Map();
+    const animationTriggered = new Set<number>();
+    const cardStates = new Map<number, 'open' | 'closed'>();
     const totalCards = cards.length;
     const scrollDistancePerCard = window.innerHeight;
     const totalScrollDistance = scrollDistancePerCard * (totalCards - 1);
 
     const peekAmount = 100;
     const stackedCardsWidth = peekAmount * (totalCards - 1);
-    
-    const container = sectionRef.current?.querySelector('.scroll-cards-wrapper');
-    
+
+    const container = sectionRef.current?.querySelector('.scroll-cards-wrapper') as HTMLElement | null;
+
     const positionCards = () => {
       if (!container) return;
-      
+
       const containerWidth = container.offsetWidth;
       const activeCardWidth = containerWidth - stackedCardsWidth;
-      
+
       cards.forEach((card, index) => {
         gsap.set(card, {
           zIndex: totalCards - index,
           opacity: 1,
           visibility: 'visible',
         });
-        
-        const cardContent = card.querySelector('.card-content');
-        const cardAnimation = card.querySelector('.card-animation');
-        
+
+        const cardContent = card.querySelector('.card-content') as HTMLElement | null;
+        const cardAnimation = card.querySelector('.card-animation') as HTMLElement | null;
+
         if (index === 0) {
           gsap.set(card, {
             width: activeCardWidth,
             flexBasis: activeCardWidth,
           });
-          
+
           if (cardContent) {
             gsap.set(cardContent, {
               opacity: 1,
@@ -168,11 +193,11 @@ function ScrollSections({ cmsData }) {
               visibility: 'visible',
             });
           }
-          
+
           cardStates.set(index, 'open');
-          
+
           if (lottieRefs.current[0] && !animationTriggered.has(0)) {
-            lottieRefs.current[0].goToAndPlay(0);
+            lottieRefs.current[0]!.goToAndPlay(0);
             animationTriggered.add(0);
           }
         } else {
@@ -180,7 +205,7 @@ function ScrollSections({ cmsData }) {
             width: peekAmount,
             flexBasis: peekAmount,
           });
-          
+
           if (cardContent) {
             gsap.set(cardContent, {
               opacity: 0,
@@ -193,13 +218,13 @@ function ScrollSections({ cmsData }) {
               visibility: 'hidden',
             });
           }
-          
+
           cardStates.set(index, 'closed');
         }
       });
     };
-    
-    let resizeTimeout = null;
+
+    let resizeTimeout: ReturnType<typeof setTimeout> | null = null;
     const handleResize = () => {
       if (resizeTimeout) clearTimeout(resizeTimeout);
       resizeTimeout = setTimeout(() => {
@@ -207,14 +232,14 @@ function ScrollSections({ cmsData }) {
         ScrollTrigger.refresh();
       }, 150);
     };
-    
+
     positionCards();
-    
+
     requestAnimationFrame(() => {
       positionCards();
       ScrollTrigger.refresh();
     });
-    
+
     window.addEventListener('resize', handleResize, { passive: true });
 
     const getCardsWrapperOffset = () => {
@@ -236,7 +261,7 @@ function ScrollSections({ cmsData }) {
       markers: false,
       onUpdate: (self) => {
         if (!container) return;
-        
+
         const progress = self.progress;
         const numTransitions = totalCards - 1;
         const scaledProgress = progress * numTransitions;
@@ -250,9 +275,9 @@ function ScrollSections({ cmsData }) {
 
         cards.forEach((card, index) => {
           if (index < currentTransitionIndex) {
-            const cardContent = card.querySelector('.card-content');
-            const cardAnimation = card.querySelector('.card-animation');
-            
+            const cardContent = card.querySelector('.card-content') as HTMLElement | null;
+            const cardAnimation = card.querySelector('.card-animation') as HTMLElement | null;
+
             gsap.set(card, {
               width: peekAmount,
               flexBasis: peekAmount,
@@ -260,7 +285,7 @@ function ScrollSections({ cmsData }) {
               opacity: 1,
               visibility: 'visible',
             });
-            
+
             if (cardContent) {
               gsap.set(cardContent, {
                 opacity: 0,
@@ -275,23 +300,23 @@ function ScrollSections({ cmsData }) {
             }
           } else if (index === currentTransitionIndex) {
             const shouldBeOpen = transitionProgress < 0.5;
-            const cardContent = card.querySelector('.card-content');
-            const cardAnimation = card.querySelector('.card-animation');
+            const cardContent = card.querySelector('.card-content') as HTMLElement | null;
+            const cardAnimation = card.querySelector('.card-animation') as HTMLElement | null;
             const currentState = cardStates.get(index);
-            
+
             if (currentState !== (shouldBeOpen ? 'open' : 'closed')) {
               const targetWidth = shouldBeOpen ? activeCardWidth : peekAmount;
               const targetOpacity = shouldBeOpen ? 1 : 0;
-              
+
               gsap.killTweensOf([card, cardContent, cardAnimation]);
-              
+
               gsap.to(card, {
                 width: targetWidth,
                 flexBasis: targetWidth,
                 duration: 0.6,
                 ease: 'power2.inOut',
               });
-              
+
               if (cardContent) {
                 gsap.to(cardContent, {
                   opacity: targetOpacity,
@@ -301,7 +326,7 @@ function ScrollSections({ cmsData }) {
                   delay: shouldBeOpen ? 0.15 : 0,
                 });
               }
-              
+
               if (cardAnimation) {
                 gsap.to(cardAnimation, {
                   opacity: targetOpacity,
@@ -310,15 +335,15 @@ function ScrollSections({ cmsData }) {
                   ease: 'power2.out',
                   delay: shouldBeOpen ? 0.15 : 0,
                 });
-                
+
                 if (shouldBeOpen && lottieRefs.current[index]) {
-                  lottieRefs.current[index].goToAndPlay(0);
+                  lottieRefs.current[index]!.goToAndPlay(0);
                 }
               }
-              
+
               cardStates.set(index, shouldBeOpen ? 'open' : 'closed');
             }
-            
+
             gsap.set(card, {
               zIndex: totalCards + 10,
               opacity: 1,
@@ -326,23 +351,23 @@ function ScrollSections({ cmsData }) {
             });
           } else if (index === currentTransitionIndex + 1) {
             const shouldBeOpen = transitionProgress >= 0.5;
-            const cardContent = card.querySelector('.card-content');
-            const cardAnimation = card.querySelector('.card-animation');
+            const cardContent = card.querySelector('.card-content') as HTMLElement | null;
+            const cardAnimation = card.querySelector('.card-animation') as HTMLElement | null;
             const currentState = cardStates.get(index);
-            
+
             if (currentState !== (shouldBeOpen ? 'open' : 'closed')) {
               const targetWidth = shouldBeOpen ? activeCardWidth : peekAmount;
               const targetOpacity = shouldBeOpen ? 1 : 0;
-              
+
               gsap.killTweensOf([card, cardContent, cardAnimation]);
-              
+
               gsap.to(card, {
                 width: targetWidth,
                 flexBasis: targetWidth,
                 duration: 0.6,
                 ease: 'power2.inOut',
               });
-              
+
               if (cardContent) {
                 gsap.to(cardContent, {
                   opacity: targetOpacity,
@@ -352,7 +377,7 @@ function ScrollSections({ cmsData }) {
                   delay: shouldBeOpen ? 0.15 : 0,
                 });
               }
-              
+
               if (cardAnimation) {
                 gsap.to(cardAnimation, {
                   opacity: targetOpacity,
@@ -361,24 +386,24 @@ function ScrollSections({ cmsData }) {
                   ease: 'power2.out',
                   delay: shouldBeOpen ? 0.15 : 0,
                 });
-                
+
                 if (shouldBeOpen && lottieRefs.current[index]) {
-                  lottieRefs.current[index].goToAndPlay(0);
+                  lottieRefs.current[index]!.goToAndPlay(0);
                 }
               }
-              
+
               cardStates.set(index, shouldBeOpen ? 'open' : 'closed');
             }
-            
+
             gsap.set(card, {
               zIndex: totalCards - index + (shouldBeOpen ? totalCards : 0) + 10,
               opacity: 1,
               visibility: 'visible',
             });
           } else {
-            const cardContent = card.querySelector('.card-content');
-            const cardAnimation = card.querySelector('.card-animation');
-            
+            const cardContent = card.querySelector('.card-content') as HTMLElement | null;
+            const cardAnimation = card.querySelector('.card-animation') as HTMLElement | null;
+
             gsap.set(card, {
               width: peekAmount,
               flexBasis: peekAmount,
@@ -386,7 +411,7 @@ function ScrollSections({ cmsData }) {
               opacity: 1,
               visibility: 'visible',
             });
-            
+
             if (cardContent) {
               gsap.set(cardContent, {
                 opacity: 0,
@@ -416,14 +441,14 @@ function ScrollSections({ cmsData }) {
 
   useEffect(() => {
     if (!isMobile) return;
-    
-    const cards = cardsRef.current.filter(Boolean);
+
+    const cards = cardsRef.current.filter(Boolean) as HTMLDivElement[];
     if (cards.length === 0) return;
 
     cards.forEach((card, index) => {
       const isOpen = index === openCardIndex;
-      const cardAnimation = card.querySelector('.card-animation');
-      const cardContent = card.querySelector('.card-content');
+      const cardAnimation = card.querySelector('.card-animation') as HTMLElement | null;
+      const cardContent = card.querySelector('.card-content') as HTMLElement | null;
       gsap.set(card, {
         height: isOpen ? 'auto' : '80px',
       });
@@ -442,12 +467,12 @@ function ScrollSections({ cmsData }) {
       }
     });
 
-    const animateCard = (index, isOpen) => {
+    const animateCard = (index: number, isOpen: boolean) => {
       const card = cards[index];
       if (!card) return;
 
-      const cardContent = card.querySelector('.card-content');
-      const cardAnimation = card.querySelector('.card-animation');
+      const cardContent = card.querySelector('.card-content') as HTMLElement | null;
+      const cardAnimation = card.querySelector('.card-animation') as HTMLElement | null;
       const targetHeight = isOpen ? 'auto' : '80px';
       const contentOpacity = isOpen ? 1 : 0;
       const animationOpacity = isOpen ? 1 : 0;
@@ -482,7 +507,7 @@ function ScrollSections({ cmsData }) {
       }
 
       if (cardAnimation && isOpen && lottieRefs.current[index]) {
-        lottieRefs.current[index].goToAndPlay(0);
+        lottieRefs.current[index]!.goToAndPlay(0);
       }
     };
 
@@ -492,7 +517,7 @@ function ScrollSections({ cmsData }) {
     });
   }, [openCardIndex, isMobile, animations.scroll1, animations.scroll2, animations.scroll3, animations.scroll4]);
 
-  const handleCardClick = useCallback((index) => {
+  const handleCardClick = useCallback((index: number) => {
     if (isMobile) {
       setOpenCardIndex(prev => prev === index ? -1 : index);
     }
@@ -504,85 +529,85 @@ function ScrollSections({ cmsData }) {
         <div className="scroll-heading">
           <h1 className="scroll-heading-text">{headingText}</h1>
         </div>
-        
+
         <div className="scroll-content">
           <div className="scroll-cards-wrapper">
             <div className="scroll-cards-stack">
-            {scrollData.map((item, index) => {
-              const cardNumber = String(index + 1).padStart(2, '0');
-              const animationKey = `scroll${index + 1}`;
-              const isLoading = loading[animationKey];
-              const animationData = animations[animationKey];
+              {scrollData.map((item, index) => {
+                const cardNumber = String(index + 1).padStart(2, '0');
+                const animationKey = `scroll${index + 1}` as keyof Animations;
+                const isLoading = loading[animationKey];
+                const animationData = animations[animationKey];
 
-              return (
-                <div
-                  key={index}
-                  ref={el => (cardsRef.current[index] = el)}
-                  className="scroll-card"
-                  data-card-number={cardNumber}
-                  onClick={() => handleCardClick(index)}
-                  style={isMobile ? { cursor: 'pointer' } : {}}
-                >
-                  <div className="card-number">{cardNumber}</div>
-                  {isMobile ? (
-                    <>
-                      <div className="card-animation">
-                        {isLoading && <div className="animation-placeholder">Loading...</div>}
-                        {animationData && (
-                          <LottieAnimation
-                            ref={el => (lottieRefs.current[index] = el)}
-                            animationData={animationData}
-                            className="lottie-card"
-                            loop={true}
-                            autoplay={false}
-                          />
-                        )}
-                      </div>
-                      <div className="card-content">
-                        <div className="card-text-wrapper">
-                          <div>
-                            <h2 className="card-title">{item.title}</h2>
-                            <p className="card-description">{item.description}</p>
+                return (
+                  <div
+                    key={index}
+                    ref={el => (cardsRef.current[index] = el)}
+                    className="scroll-card"
+                    data-card-number={cardNumber}
+                    onClick={() => handleCardClick(index)}
+                    style={isMobile ? { cursor: 'pointer' } : {}}
+                  >
+                    <div className="card-number">{cardNumber}</div>
+                    {isMobile ? (
+                      <>
+                        <div className="card-animation">
+                          {isLoading && <div className="animation-placeholder">Loading...</div>}
+                          {animationData && (
+                            <LottieAnimation
+                              ref={el => (lottieRefs.current[index] = el)}
+                              animationData={animationData}
+                              className="lottie-card"
+                              loop={true}
+                              autoplay={false}
+                            />
+                          )}
+                        </div>
+                        <div className="card-content">
+                          <div className="card-text-wrapper">
+                            <div>
+                              <h2 className="card-title">{item.title}</h2>
+                              <p className="card-description">{item.description}</p>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="card-content">
-                        <div className="card-text-wrapper">
-                          <div>
-                            <h2 className="card-title">{item.title}</h2>
-                            <p className="card-description">{item.description}</p>
+                      </>
+                    ) : (
+                      <>
+                        <div className="card-content">
+                          <div className="card-text-wrapper">
+                            <div>
+                              <h2 className="card-title">{item.title}</h2>
+                              <p className="card-description">{item.description}</p>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      <div className="card-animation">
-                        {isLoading && <div className="animation-placeholder">Loading...</div>}
-                        {animationData && (
-                          <LottieAnimation
-                            ref={el => (lottieRefs.current[index] = el)}
-                            animationData={animationData}
-                            className="lottie-card"
-                            loop={true}
-                            autoplay={false}
-                          />
-                        )}
-                      </div>
-                    </>
-                  )}
-                </div>
-              );
-            })}
+                        <div className="card-animation">
+                          {isLoading && <div className="animation-placeholder">Loading...</div>}
+                          {animationData && (
+                            <LottieAnimation
+                              ref={el => (lottieRefs.current[index] = el)}
+                              animationData={animationData}
+                              className="lottie-card"
+                              loop={true}
+                              autoplay={false}
+                            />
+                          )}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
       </section>
       <div className="scroll-svg-container">
-        <img 
-          src={scrollSection.policyAppsSvgUrl || policyAppsSvgFallback} 
-          alt="Policy Apps" 
-          className="policy-apps-svg" 
+        <img
+          src={scrollSection.policyAppsSvgUrl || policyAppsSvgFallback}
+          alt="Policy Apps"
+          className="policy-apps-svg"
         />
       </div>
     </>
@@ -590,3 +615,4 @@ function ScrollSections({ cmsData }) {
 }
 
 export default ScrollSections;
+

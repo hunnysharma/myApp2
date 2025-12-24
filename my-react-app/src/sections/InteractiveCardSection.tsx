@@ -2,9 +2,14 @@ import { useState, useMemo, memo } from 'react';
 import './InteractiveCardSection.css';
 import ComplianceSVG from '../assets/compliance.svg';
 import GoBeyondSVG from '../assets/gobeyond.svg';
+import type { CMSData } from '../types/cms';
 
-function InteractiveCardSection({ cmsData }) {
-  const [activeView, setActiveView] = useState('before');
+interface InteractiveCardSectionProps {
+  cmsData?: CMSData | null;
+}
+
+function InteractiveCardSection({ cmsData }: InteractiveCardSectionProps) {
+  const [activeView, setActiveView] = useState<'before' | 'after'>('before');
 
   const section = useMemo(() => (cmsData?.interactiveCardSection || {
     title: 'Go Beyond Typical Search',

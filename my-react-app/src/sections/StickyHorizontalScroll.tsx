@@ -1,14 +1,19 @@
 import { useLayoutEffect, useRef, useState, useMemo } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import type { CMSData } from '../types/cms';
 import './StickyHorizontalScroll.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
-function StickyHorizontalScroll({ cmsData }) {
-  const sectionRef = useRef(null);
-  const cardsContainerRef = useRef(null);
-  const [isMobile, setIsMobile] = useState(false);
+interface StickyHorizontalScrollProps {
+  cmsData?: CMSData | null;
+}
+
+function StickyHorizontalScroll({ cmsData }: StickyHorizontalScrollProps) {
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const cardsContainerRef = useRef<HTMLDivElement | null>(null);
+  const [isMobile, setIsMobile] = useState<boolean>(false);
 
   const defaultData = useMemo(() => ({
     label: "Choose Ema's role to start",
@@ -26,10 +31,13 @@ function StickyHorizontalScroll({ cmsData }) {
   }), []);
 
   const sectionData = cmsData?.stickyHorizontalScroll || defaultData;
-  const { label, title, cards = [] } = sectionData;
+  const { label, title } = sectionData;
+  
+  // Type assertion needed because CMSData cards might have different structure
+  const typedCards = (sectionData.cards || defaultData.cards || []) as Array<{ title: string; description: string; imageUrl?: string; order?: number }>;
 
   useLayoutEffect(() => {
-    let timeoutId = null;
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
     const checkMobile = () => {
       if (timeoutId) clearTimeout(timeoutId);
       timeoutId = setTimeout(() => {
@@ -48,9 +56,9 @@ function StickyHorizontalScroll({ cmsData }) {
     const section = sectionRef.current;
     const container = cardsContainerRef.current;
 
-    if (!section || !container || cards.length === 0) return;
+    if (!section || !container || typedCards.length === 0) return;
 
-    let anim = null;
+    let anim: gsap.core.Tween | null = null;
 
     const initHorizontalScroll = () => {
       if (anim) {
@@ -68,20 +76,20 @@ function StickyHorizontalScroll({ cmsData }) {
       const containerMaxWidth = 1070;
       const containerPadding = 32;
       const viewportWidth = window.innerWidth;
-      
-      const containerStart = viewportWidth > containerMaxWidth 
+
+      const containerStart = viewportWidth > containerMaxWidth
         ? (viewportWidth - containerMaxWidth) / 2 + containerPadding
         : containerPadding;
 
-      const containerWidth = viewportWidth > containerMaxWidth 
+      const containerWidth = viewportWidth > containerMaxWidth
         ? containerMaxWidth - (containerPadding * 2)
         : viewportWidth - (containerPadding * 2);
 
       const totalCardsWidth = container.scrollWidth;
-      
-      const firstCard = container.querySelector('.sticky-horizontal-card');
+
+      const firstCard = container.querySelector('.sticky-horizontal-card') as HTMLElement;
       const cardWidth = firstCard ? firstCard.offsetWidth : 378;
-      
+
       const buffer = cardWidth * 0.5;
       const totalScrollWidth = totalCardsWidth - containerWidth + buffer;
 
@@ -108,7 +116,7 @@ function StickyHorizontalScroll({ cmsData }) {
 
     initHorizontalScroll();
 
-    let resizeTimeout = null;
+    let resizeTimeout: ReturnType<typeof setTimeout> | null = null;
     const onResize = () => {
       if (resizeTimeout) clearTimeout(resizeTimeout);
       resizeTimeout = setTimeout(() => {
@@ -123,7 +131,7 @@ function StickyHorizontalScroll({ cmsData }) {
 
     if (totalImages > 0) {
       images.forEach((img) => {
-        if (img.complete) {
+        if ((img as HTMLImageElement).complete) {
           loaded++;
           if (loaded === totalImages) ScrollTrigger.refresh();
         } else {
@@ -143,7 +151,7 @@ function StickyHorizontalScroll({ cmsData }) {
       window.removeEventListener("resize", onResize);
       if (resizeTimeout) clearTimeout(resizeTimeout);
     };
-  }, [cards, isMobile]);
+  }, [typedCards, isMobile]);
 
   return (
     <section ref={sectionRef} className="sticky-horizontal-section">
@@ -154,7 +162,7 @@ function StickyHorizontalScroll({ cmsData }) {
 
       <div className="sticky-horizontal-cards-wrapper">
         <div ref={cardsContainerRef} className="sticky-horizontal-cards-container">
-          {cards.map((card, index) => (
+          {typedCards.map((card, index) => (
             <div key={card.order || index} className="sticky-horizontal-card">
               {card.imageUrl && (
                 <div className="sticky-horizontal-card-image-wrapper">
@@ -179,3 +187,4 @@ function StickyHorizontalScroll({ cmsData }) {
 }
 
 export default StickyHorizontalScroll;
+

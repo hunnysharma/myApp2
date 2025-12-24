@@ -1,10 +1,16 @@
 import { useEffect, useState, useMemo, memo } from 'react';
 import { useInView } from 'react-intersection-observer';
 import LottieAnimation from '../components/LottieAnimation';
+import { getLottieData } from '../utils/lottiePreloader';
+import type { CMSData } from '../types/cms';
 import './HeroSection.css';
 
-function HeroSection({ cmsData }) {
-  const [animationData, setAnimationData] = useState(null);
+interface HeroSectionProps {
+  cmsData?: CMSData | null;
+}
+
+function HeroSection({ cmsData }: HeroSectionProps) {
+  const [animationData, setAnimationData] = useState<unknown>(null);
   const { ref, inView } = useInView({
     threshold: 0.3,
     triggerOnce: true,
@@ -17,24 +23,27 @@ function HeroSection({ cmsData }) {
   }), [cmsData?.hero]);
 
   useEffect(() => {
-    if (cmsData?.hero?.lottieAnimationUrl) {
-      fetch(cmsData.hero.lottieAnimationUrl)
-        .then(res => res.json())
-        .then(data => setAnimationData(data))
-        .catch(() => {
-          loadLocalAnimation();
-        });
-    } else {
-      loadLocalAnimation();
-    }
-  }, [cmsData]);
+    const loadAnimation = async () => {
+      try {
+        const url = cmsData?.hero?.lottieAnimationUrl || '/assets/lottie/Hero_knowledge Insight_F (1).json';
+        const data = await getLottieData(url);
+        if (data) {
+          setAnimationData(data);
+        } else {
+          // Fallback: try direct fetch if cache miss
+          const response = await fetch('/assets/lottie/Hero_knowledge Insight_F (1).json');
+          if (response.ok) {
+            const fallbackData = await response.json();
+            setAnimationData(fallbackData);
+          }
+        }
+      } catch (error) {
+        console.warn('Failed to load hero animation:', error);
+      }
+    };
 
-  const loadLocalAnimation = () => {
-    fetch('/assets/lottie/Hero_knowledge Insight_F (1).json')
-      .then(res => res.json())
-      .then(data => setAnimationData(data))
-      .catch(() => {});
-  };
+    loadAnimation();
+  }, [cmsData]);
 
   return (
     <section ref={ref} className="hero-section">
@@ -60,3 +69,4 @@ function HeroSection({ cmsData }) {
 }
 
 export default memo(HeroSection);
+

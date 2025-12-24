@@ -92,7 +92,6 @@
   display: grid;
   grid-template-columns: 1fr;
   overflow: hidden;
-  opacity: 0;
 }
 
 .stacked-card:first-child {

@@ -120,6 +120,8 @@ export async function fetchCMSData() {
       stackedCardsSection: stackedCardsSection || getDefaultCMSData().stackedCardsSection,
     };
   } catch (error) {
+    console.error('Error fetching CMS data from Sanity:', error);
+    // Return default data as fallback
     return getDefaultCMSData();
   }
 }

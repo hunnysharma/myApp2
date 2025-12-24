@@ -205,7 +205,6 @@
 
 .hero-animation {
   position: absolute;
-  bottom: 0;
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
@@ -215,6 +214,15 @@
   align-items: flex-end;
   justify-content: center;
   pointer-events: none;
+}
+
+@media (min-width: 769px) {
+  .hero-animation {
+    top: 10%;
+  }
+  .hero-title{
+    width: 622px;
+  }
 }
 
 .lottie-hero {

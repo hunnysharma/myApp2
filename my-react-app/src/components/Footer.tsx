@@ -1,7 +1,12 @@
 import { useMemo, memo } from 'react';
 import './Footer.css';
+import type { CMSData } from '../types/cms';
 
-function Footer({ cmsData }) {
+interface FooterProps {
+  cmsData?: CMSData | null;
+}
+
+function Footer({ cmsData }: FooterProps) {
   const defaultData = useMemo(() => ({
     logo: {
       text: 'Ema',
@@ -58,14 +63,14 @@ function Footer({ cmsData }) {
   const logo = cmsFooter.logo || defaultData.logo;
   const email = cmsFooter.email || defaultData.email;
   const address = cmsFooter.address || defaultData.address;
-  const socialLinks = cmsFooter.socialLinks && cmsFooter.socialLinks.length > 0 
-    ? cmsFooter.socialLinks 
+  const socialLinks = cmsFooter.socialLinks && cmsFooter.socialLinks.length > 0
+    ? cmsFooter.socialLinks
     : defaultData.socialLinks;
-  const sections = cmsFooter.sections && cmsFooter.sections.length > 0 
-    ? cmsFooter.sections 
+  const sections = cmsFooter.sections && cmsFooter.sections.length > 0
+    ? cmsFooter.sections
     : defaultData.sections;
-  const legalLinks = cmsFooter.legalLinks && cmsFooter.legalLinks.length > 0 
-    ? cmsFooter.legalLinks 
+  const legalLinks = cmsFooter.legalLinks && cmsFooter.legalLinks.length > 0
+    ? cmsFooter.legalLinks
     : defaultData.legalLinks;
   const copyright = cmsFooter.copyright || defaultData.copyright;
 
@@ -95,7 +100,7 @@ function Footer({ cmsData }) {
             <div className="footer-address">{address?.split('\n').map((line, i) => (
               <span key={i}>
                 {line}
-                {i < address.split('\n').length - 1 && <br />}
+                {i < (address?.split('\n').length || 1) - 1 && <br />}
               </span>
             ))}</div>
             {legalLinks && legalLinks.map((link, index) => (
@@ -163,3 +168,4 @@ function Footer({ cmsData }) {
 }
 
 export default memo(Footer);
+

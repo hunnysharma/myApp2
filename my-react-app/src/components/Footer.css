@@ -161,7 +161,7 @@
 
 .footer-nav-title {
   color: white;
-  font-size: 1.125rem;
+  font-size: 20px;
   font-weight: 700;
   text-decoration: none;
   margin-bottom: 0.5rem;
@@ -181,9 +181,10 @@
 .footer-nav-link {
   color: white;
   text-decoration: none;
-  font-size: 0.9375rem;
-  font-weight: 400;
+  font-size: 16px;
+  font-weight: 500;
   transition: opacity 0.2s;
+  
 }
 
 .footer-nav-link:hover {

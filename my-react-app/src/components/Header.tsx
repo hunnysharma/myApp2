@@ -1,18 +1,21 @@
 import { useEffect, useState, useCallback, memo } from 'react';
 import { urlForImage } from '../lib/sanity';
 import { fetchHeader } from '../services/cms';
+import type { HeaderData } from '../types/cms';
 import './Header.css';
 
 function Header() {
-  const [headerData, setHeaderData] = useState(null);
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [openDropdowns, setOpenDropdowns] = useState({});
+  const [headerData, setHeaderData] = useState<HeaderData | null>(null);
+  const [isScrolled, setIsScrolled] = useState<boolean>(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+  const [openDropdowns, setOpenDropdowns] = useState<Record<number, boolean>>({});
 
   useEffect(() => {
     fetchHeader()
-      .then(data => setHeaderData(data))
-      .catch(() => {});
+      .then((data) => setHeaderData(data))
+      .catch((error) => {
+        console.error('Error fetching header data:', error);
+      });
   }, []);
 
   const handleScroll = useCallback(() => {
@@ -42,7 +45,7 @@ function Header() {
   const dropdownArrowUrl = headerData?.dropdownArrowUrl || null;
 
   const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(prev => !prev);
+    setIsMobileMenuOpen((prev) => !prev);
   };
 
   const closeMobileMenu = () => {
@@ -82,17 +85,17 @@ function Header() {
     };
   }, [isMobileMenuOpen]);
 
-  const toggleDropdown = (index) => {
-    setOpenDropdowns(prev => ({
+  const toggleDropdown = (index: number) => {
+    setOpenDropdowns((prev) => ({
       ...prev,
-      [index]: !prev[index]
+      [index]: !prev[index],
     }));
   };
 
   return (
     <>
       {isMobileMenuOpen && (
-        <div 
+        <div
           className="mobile-menu-overlay"
           onClick={closeMobileMenu}
           aria-hidden="true"
@@ -103,9 +106,9 @@ function Header() {
           <div className={`logo ${isMobileMenuOpen ? 'hide-on-mobile-menu' : ''}`}>
             <a href={logo.link || '/'}>
               {logoImageUrl ? (
-                <img 
-                  src={logoImageUrl} 
-                  alt={logo.text || 'Logo'} 
+                <img
+                  src={logoImageUrl}
+                  alt={logo.text || 'Logo'}
                   className="logo-image"
                 />
               ) : (
@@ -113,25 +116,25 @@ function Header() {
               )}
             </a>
           </div>
-          <button 
+          <button
             className={`mobile-menu-toggle ${isMobileMenuOpen ? 'hide-on-mobile-menu' : ''}`}
             onClick={toggleMobileMenu}
             aria-label="Toggle menu"
             aria-expanded={isMobileMenuOpen}
           >
-            <svg 
-              width="24" 
-              height="24" 
-              viewBox="0 0 24 24" 
-              fill="none" 
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
               xmlns="http://www.w3.org/2000/svg"
               className="hamburger-icon"
             >
-              <path 
-                d="M3 12H21M3 6H21M3 18H21" 
-                stroke="#0F7B0F" 
-                strokeWidth="2" 
-                strokeLinecap="round" 
+              <path
+                d="M3 12H21M3 6H21M3 18H21"
+                stroke="#0F7B0F"
+                strokeWidth="2"
+                strokeLinecap="round"
                 strokeLinejoin="round"
               />
             </svg>
@@ -140,17 +143,17 @@ function Header() {
             {/* Desktop Navigation Links */}
             {navigation.length > 0 ? (
               navigation.map((item, index) => (
-                <a 
-                  key={index} 
-                  href={item.url || '#'} 
+                <a
+                  key={index}
+                  href={item.url || '#'}
                   className={`nav-link ${item.hasDropdown ? 'dropdown' : ''}`}
                 >
                   {item.label}
                   {item.hasDropdown && (
                     dropdownArrowUrl ? (
-                      <img 
-                        src={dropdownArrowUrl} 
-                        alt="Dropdown" 
+                      <img
+                        src={dropdownArrowUrl}
+                        alt="Dropdown"
                         className="dropdown-arrow"
                       />
                     ) : (
@@ -198,7 +201,7 @@ function Header() {
                 </a>
               </>
             )}
-            <button 
+            <button
               className="btn-primary"
               onClick={() => {
                 if (ctaButton.url) {
@@ -214,9 +217,9 @@ function Header() {
               <div className="logo">
                 <a href={logo.link || '/'}>
                   {logoImageUrl ? (
-                    <img 
-                      src={logoImageUrl} 
-                      alt={logo.text || 'Logo'} 
+                    <img
+                      src={logoImageUrl}
+                      alt={logo.text || 'Logo'}
                       className="logo-image"
                     />
                   ) : (
@@ -224,7 +227,7 @@ function Header() {
                   )}
                 </a>
               </div>
-              <button 
+              <button
                 className="mobile-menu-close"
                 onClick={closeMobileMenu}
                 aria-label="Close menu"
@@ -232,30 +235,30 @@ function Header() {
                 ×
               </button>
             </div>
-            
+
             <div className="mobile-menu-content">
               {navigation.length > 0 ? (
                 navigation.map((item, index) => (
                   <div key={index} className="mobile-menu-item">
                     {item.hasDropdown && item.subItems ? (
                       <>
-                        <button 
+                        <button
                           className="mobile-menu-link mobile-menu-dropdown-toggle"
                           onClick={() => toggleDropdown(index)}
                         >
                           <span>{item.label}</span>
-                          <svg 
+                          <svg
                             className={`mobile-dropdown-arrow ${openDropdowns[index] ? 'open' : ''}`}
-                            width="12" 
-                            height="12" 
-                            viewBox="0 0 12 12" 
+                            width="12"
+                            height="12"
+                            viewBox="0 0 12 12"
                             fill="none"
                           >
-                            <path 
-                              d="M3 4.5L6 7.5L9 4.5" 
-                              stroke="#1F2937" 
-                              strokeWidth="1.5" 
-                              strokeLinecap="round" 
+                            <path
+                              d="M3 4.5L6 7.5L9 4.5"
+                              stroke="#1F2937"
+                              strokeWidth="1.5"
+                              strokeLinecap="round"
                               strokeLinejoin="round"
                             />
                           </svg>
@@ -263,7 +266,7 @@ function Header() {
                         {openDropdowns[index] && (
                           <div className="mobile-menu-dropdown">
                             {item.subItems.map((subItem, subIndex) => (
-                              <a 
+                              <a
                                 key={subIndex}
                                 href={subItem.url || '#'}
                                 className="mobile-menu-sublink"
@@ -276,8 +279,8 @@ function Header() {
                         )}
                       </>
                     ) : (
-                      <a 
-                        href={item.url || '#'} 
+                      <a
+                        href={item.url || '#'}
                         className="mobile-menu-link"
                         onClick={closeMobileMenu}
                       >
@@ -289,23 +292,23 @@ function Header() {
               ) : (
                 <>
                   <div className="mobile-menu-item">
-                    <button 
+                    <button
                       className="mobile-menu-link mobile-menu-dropdown-toggle"
                       onClick={() => toggleDropdown(0)}
                     >
                       <span>Products</span>
-                      <svg 
+                      <svg
                         className={`mobile-dropdown-arrow ${openDropdowns[0] ? 'open' : ''}`}
-                        width="12" 
-                        height="12" 
-                        viewBox="0 0 12 12" 
+                        width="12"
+                        height="12"
+                        viewBox="0 0 12 12"
                         fill="none"
                       >
-                        <path 
-                          d="M3 4.5L6 7.5L9 4.5" 
-                          stroke="#1F2937" 
-                          strokeWidth="1.5" 
-                          strokeLinecap="round" 
+                        <path
+                          d="M3 4.5L6 7.5L9 4.5"
+                          stroke="#1F2937"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
                           strokeLinejoin="round"
                         />
                       </svg>
@@ -319,23 +322,23 @@ function Header() {
                     )}
                   </div>
                   <div className="mobile-menu-item">
-                    <button 
+                    <button
                       className="mobile-menu-link mobile-menu-dropdown-toggle"
                       onClick={() => toggleDropdown(1)}
                     >
                       <span>Solutions</span>
-                      <svg 
+                      <svg
                         className={`mobile-dropdown-arrow ${openDropdowns[1] ? 'open' : ''}`}
-                        width="12" 
-                        height="12" 
-                        viewBox="0 0 12 12" 
+                        width="12"
+                        height="12"
+                        viewBox="0 0 12 12"
                         fill="none"
                       >
-                        <path 
-                          d="M3 4.5L6 7.5L9 4.5" 
-                          stroke="#1F2937" 
-                          strokeWidth="1.5" 
-                          strokeLinecap="round" 
+                        <path
+                          d="M3 4.5L6 7.5L9 4.5"
+                          stroke="#1F2937"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
                           strokeLinejoin="round"
                         />
                       </svg>
@@ -349,23 +352,23 @@ function Header() {
                     )}
                   </div>
                   <div className="mobile-menu-item">
-                    <button 
+                    <button
                       className="mobile-menu-link mobile-menu-dropdown-toggle"
                       onClick={() => toggleDropdown(2)}
                     >
                       <span>Resources</span>
-                      <svg 
+                      <svg
                         className={`mobile-dropdown-arrow ${openDropdowns[2] ? 'open' : ''}`}
-                        width="12" 
-                        height="12" 
-                        viewBox="0 0 12 12" 
+                        width="12"
+                        height="12"
+                        viewBox="0 0 12 12"
                         fill="none"
                       >
-                        <path 
-                          d="M3 4.5L6 7.5L9 4.5" 
-                          stroke="#1F2937" 
-                          strokeWidth="1.5" 
-                          strokeLinecap="round" 
+                        <path
+                          d="M3 4.5L6 7.5L9 4.5"
+                          stroke="#1F2937"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
                           strokeLinejoin="round"
                         />
                       </svg>
@@ -382,23 +385,23 @@ function Header() {
                     )}
                   </div>
                   <div className="mobile-menu-item">
-                    <button 
+                    <button
                       className="mobile-menu-link mobile-menu-dropdown-toggle"
                       onClick={() => toggleDropdown(3)}
                     >
                       <span>Company</span>
-                      <svg 
+                      <svg
                         className={`mobile-dropdown-arrow ${openDropdowns[3] ? 'open' : ''}`}
-                        width="12" 
-                        height="12" 
-                        viewBox="0 0 12 12" 
+                        width="12"
+                        height="12"
+                        viewBox="0 0 12 12"
                         fill="none"
                       >
-                        <path 
-                          d="M3 4.5L6 7.5L9 4.5" 
-                          stroke="#1F2937" 
-                          strokeWidth="1.5" 
-                          strokeLinecap="round" 
+                        <path
+                          d="M3 4.5L6 7.5L9 4.5"
+                          stroke="#1F2937"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
                           strokeLinejoin="round"
                         />
                       </svg>
@@ -415,9 +418,9 @@ function Header() {
                 </>
               )}
             </div>
-            
+
             <div className="mobile-menu-footer">
-              <button 
+              <button
                 className="btn-primary mobile-cta-button"
                 onClick={() => {
                   if (ctaButton.url) {

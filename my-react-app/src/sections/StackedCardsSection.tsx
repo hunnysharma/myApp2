@@ -1,24 +1,29 @@
 import { useLayoutEffect, useRef, useState, useMemo } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import type { CMSData } from '../types/cms';
 import './StackedCardsSection.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
-function StackedCardsSection({ cmsData }) {
-  const sectionRef = useRef(null);
-  const contentRef = useRef(null);
-  const containerRef = useRef(null);
-  const cardsRef = useRef([]);
-  const [isMobile, setIsMobile] = useState(false);
+interface StackedCardsSectionProps {
+  cmsData?: CMSData | null;
+}
+
+function StackedCardsSection({ cmsData }: StackedCardsSectionProps) {
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const contentRef = useRef<HTMLDivElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const [isMobile, setIsMobile] = useState<boolean>(false);
 
   const defaultData = useMemo(() => ({
     title: "Everything you need to build your AI workforce now",
     description: "From conversational AI Employee creation to enterprise-grade security & trust, Ema handles the complexity so you can focus on results.",
     cards: [
-      { title: "Breakthrough autonomy", text: "Use Ema’s AI Employee Builder to instantly create enterprise-ready agentic workflows. Free up your employees from execution to focus on vision, creativity and growth.", image: "https://heroic-chocolate-319b05815e.media.strapiapp.com/Frame_2147229495_14b4a2a7ea.png" },
-      { title: "Optimized, transparent, and trustworthy", text: "Ema’s AI Employees are powered by EmaFusion™, which combines the outputs of 100+ LLMs so your AI investments are always optimized and future-proof. Get encrypted PII protection and compliance with leading security protocols from day one.", image: "https://heroic-chocolate-319b05815e.media.strapiapp.com/img_04_17ebec3991.png" },
-      { title: "Autonomy with judgment", text: "Ema’s AI employees reason and learn when to involve humans, so automation stays fast and accurate, but also trusted.", image: "https://heroic-chocolate-319b05815e.media.strapiapp.com/image_10_1_f48b2ffb75.png" },
+      { title: "Breakthrough autonomy", text: "Use Ema's AI Employee Builder to instantly create enterprise-ready agentic workflows. Free up your employees from execution to focus on vision, creativity and growth.", image: "https://heroic-chocolate-319b05815e.media.strapiapp.com/Frame_2147229495_14b4a2a7ea.png" },
+      { title: "Optimized, transparent, and trustworthy", text: "Ema's AI Employees are powered by EmaFusion™, which combines the outputs of 100+ LLMs so your AI investments are always optimized and future-proof. Get encrypted PII protection and compliance with leading security protocols from day one.", image: "https://heroic-chocolate-319b05815e.media.strapiapp.com/img_04_17ebec3991.png" },
+      { title: "Autonomy with judgment", text: "Ema's AI employees reason and learn when to involve humans, so automation stays fast and accurate, but also trusted.", image: "https://heroic-chocolate-319b05815e.media.strapiapp.com/image_10_1_f48b2ffb75.png" },
       { title: "Democratized AI workforce creation", text: "No code, no bottlenecks. Business users build AI employees, turning ideas into impact in minutes.", image: "https://heroic-chocolate-319b05815e.media.strapiapp.com/img_05_da0056faca.png" },
       { title: "The future of work, made simple", text: "Transform your business with Ema's enterprise-grade agentic AI platform: accessible, powerful, and easy to scale.", image: "https://heroic-chocolate-319b05815e.media.strapiapp.com/img_01_36aea7cc73.png" },
     ],
@@ -27,7 +32,7 @@ function StackedCardsSection({ cmsData }) {
   const cmsSection = cmsData?.stackedCardsSection;
   const title = cmsSection?.title || defaultData.title;
   const description = cmsSection?.description || defaultData.description;
-  
+
   const cards = useMemo(() => {
     if (cmsSection?.cards && cmsSection.cards.length > 0) {
       return [...cmsSection.cards].sort((a, b) => (a.order || 0) - (b.order || 0));
@@ -36,7 +41,7 @@ function StackedCardsSection({ cmsData }) {
   }, [cmsSection?.cards, defaultData.cards]);
 
   useLayoutEffect(() => {
-    let timeoutId = null;
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
     const checkMobile = () => {
       if (timeoutId) clearTimeout(timeoutId);
       timeoutId = setTimeout(() => {
@@ -55,13 +60,18 @@ function StackedCardsSection({ cmsData }) {
     const section = sectionRef.current;
     const content = contentRef.current;
     const container = containerRef.current;
-    const cardEls = cardsRef.current.filter(Boolean);
+    const cardEls = cardsRef.current.filter(Boolean) as HTMLDivElement[];
 
     if (!section || !content || !container || cardEls.length === 0) return;
 
     const triggerElement = isMobile ? container : section;
     const headerHeight = 150;
     const startPoint = isMobile ? `top top+=${headerHeight}` : "top top";
+
+    gsap.set(cardEls[0], { yPercent: 0 });
+    cardEls.slice(1).forEach((card) => {
+      gsap.set(card, { yPercent: 100 });
+    });
 
     const tl = gsap.timeline({
       scrollTrigger: {
@@ -76,14 +86,16 @@ function StackedCardsSection({ cmsData }) {
       }
     });
 
-    tl.to(cardEls[0], { yPercent: 0, opacity: 1 });
+    tl.to(cardEls[0], { yPercent: 0 });
 
     cardEls.slice(1).forEach((current) => {
-      tl.from(current, { yPercent: 80, opacity: 0 }, "-=0.4");
-      tl.to(current, { yPercent: 0, opacity: 1 }, "-=0.2");
+      tl.from(current, { yPercent: 140 }, "-=0");
+      tl.to(current, { yPercent: 0 }, "-=0.2");
     });
 
-    return () => tl.scrollTrigger?.kill();
+    return () => {
+      tl.scrollTrigger?.kill();
+    };
   }, [cards, isMobile]);
 
   return (
@@ -127,3 +139,4 @@ function StackedCardsSection({ cmsData }) {
 }
 
 export default StackedCardsSection;
+

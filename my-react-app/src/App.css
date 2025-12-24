@@ -32,18 +32,18 @@ body {
 }
 
 .loading-screen {
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
-  background: #f9fafb;
+  background: #F7F6F2;
 }
 
 .loader {
-  width: 50px;
-  height: 50px;
+  width: 48px;
+  height: 48px;
   border: 4px solid #E5E7EB;
-  border-top-color: #0F7B0F;
+  border-top-color: #1F8844;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -54,34 +54,77 @@ body {
   }
 }
 
-/* Smooth scroll behavior */
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
+/* Error Boundary Styles */
+.error-boundary {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: #f9fafb;
 }
 
-/* Accessibility improvements */
-:focus-visible {
-  outline: 2px solid #0F7B0F;
-  outline-offset: 2px;
+.error-boundary-content {
+  max-width: 600px;
+  text-align: center;
+  padding: 2rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-button {
+.error-boundary-content h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 1rem;
+}
+
+.error-boundary-content p {
+  color: #6b7280;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.error-details {
+  text-align: left;
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background: #f3f4f6;
+  border-radius: 4px;
+  font-size: 0.875rem;
+}
+
+.error-details summary {
   cursor: pointer;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.5rem;
 }
 
-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
+.error-details pre {
+  margin-top: 0.5rem;
+  color: #dc2626;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
-/* Responsive typography */
-@media (max-width: 768px) {
-  body {
-    font-size: 16px;
-  }
+.error-retry-button {
+  padding: 0.75rem 1.5rem;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.error-retry-button:hover {
+  background: #1d4ed8;
+}
+
+.error-retry-button:active {
+  background: #1e40af;
 }

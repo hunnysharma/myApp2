@@ -1,4 +1,4 @@
-import { Suspense } from 'react';
+import { Suspense, ReactNode } from 'react';
 import { SanityProvider } from '@sanity/sdk-react';
 import { sanityClient } from '../lib/sanity-sdk';
 
@@ -10,7 +10,11 @@ function LoadingFallback() {
   );
 }
 
-export function CMSProvider({ children }) {
+interface CMSProviderProps {
+  children: ReactNode;
+}
+
+export function CMSProvider({ children }: CMSProviderProps) {
   const projectId = import.meta.env.VITE_SANITY_PROJECT_ID;
   const dataset = import.meta.env.VITE_SANITY_DATASET;
 

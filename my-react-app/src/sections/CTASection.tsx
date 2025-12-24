@@ -1,7 +1,12 @@
 import { useMemo, memo } from 'react';
 import './CTASection.css';
+import type { CMSData } from '../types/cms';
 
-function CTASection({ cmsData }) {
+interface CTASectionProps {
+  cmsData?: CMSData | null;
+}
+
+function CTASection({ cmsData }: CTASectionProps) {
   const defaultData = useMemo(() => ({
     description: "Turn customer experience into your competitive edge",
     buttonText: "Hire Ema Today",
@@ -25,7 +30,7 @@ function CTASection({ cmsData }) {
             </div>
           )}
         </div>
-        
+
         <div className="cta-right">
           <p className="cta-description">{description}</p>
           <a href={buttonLink} className="cta-button">
